@@ -53,6 +53,11 @@ int Array::search(int elem)
 	return ind;
 }
 
+int Array::get_elem(int ind)
+{
+	return p[ind];
+}
+
 void Array::change(int ind, int elem)
 {
 	p[ind] = elem;
@@ -260,6 +265,40 @@ Array Array:: operator ++ (int)
 	return A;
 }
 
+Array & Array:: operator = (const Array & rhs)
+{
+	int q = 0;
+	for (int i = 0; i < index; i++)
+		if (p[i] == rhs.p[i])
+			q++;
+	if (q == rhs.index)
+		return *this;
+	p = new int[rhs.max_size];
+	for (int i = 0; i<rhs.max_size; i++)
+		p[i] = rhs.p[i];
+	max_size = rhs.max_size;
+	index = rhs.index;
+	arr_cnt++;
+	return *this;
+}
+
+Array::operator double()
+{
+	double sum = 0;
+	for (int i = 0; i < index; i++)
+		sum += p[i];
+	double av = sum / index;
+	return av;
+}
+
+Array::operator int()
+{
+	int sum = 0;
+	for (int i = 0; i < index; i++)
+		sum += p[i];
+	return sum;
+}
+
 ostream & operator <<(ostream &out, Array & obj)
 {
 	for (int i = 0; i < obj.index; i++)
@@ -269,7 +308,7 @@ ostream & operator <<(ostream &out, Array & obj)
 	return out;
 }
 
-istream & operator >>(istream &in, Array & obj)
+istream & operator >> (istream &in, Array & obj)
 {
 	in >> obj.index;
 	obj.max_size=obj.index;
@@ -288,5 +327,28 @@ ofstream & operator << (ofstream &file, Array & obj)
 	{
 		file << obj.p[i] << " ";
 	}
+	return file;
+}
+
+ifstream & operator >> (ifstream &file, Array & obj)
+{
+	int size = 0;
+	char smbl;
+	while (!file.eof())
+	{
+		file.get(smbl);
+		if (smbl==' ')
+			size++;
+	}
+	file.clear();
+	file.seekg(0, ios::beg);
+	obj.p = new int[size];
+	for (int i = 0; i < size-1; i++)
+	{
+			file >> obj.p[i];
+	}
+	obj.index = size-1;
+	obj.max_size = size-1;
+	obj.arr_cnt++;
 	return file;
 }
